@@ -1,0 +1,119 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b2340 0%, #103a67 100%);
+}
+
+.App-header {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.App-header p {
+  margin: 14px 0 32px;
+  max-width: 720px;
+  font-size: 1rem;
+  color: #c4d7f5;
+}
+
+.match-grid {
+  width: 100%;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-bottom: 24px;
+}
+
+.match-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  padding: 24px;
+  text-align: left;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.16);
+}
+
+.match-card h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #e8f2ff;
+}
+
+.match-card label {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  color: #dce7fb;
+}
+
+.match-card input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+}
+
+.match-card input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.match-button {
+  border: none;
+  border-radius: 999px;
+  padding: 14px 30px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0b2340;
+  background: #ffd166;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.match-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(255, 209, 102, 0.2);
+}
+
+.result-box {
+  margin-top: 26px;
+  width: 100%;
+  max-width: 640px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  padding: 22px;
+  color: #f7fbff;
+  text-align: left;
+}
+
+.result-box strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1.05rem;
+}
+
+.result-detail {
+  margin-top: 8px;
+  color: #ffd166;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .App-header {
+    padding: 28px 16px;
+  }
+}
