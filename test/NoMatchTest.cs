@@ -20,8 +20,6 @@ namespace PocMarketInterface.Tests
                     Price = 100m,
                     Quantity = 5,
                     Amount = 500m,
-                    IsBuy = true,
-                    IsSell = false,
                     IsCancelled = false,
                     IsSettled = false,
                     IsMatched = false
@@ -30,9 +28,7 @@ namespace PocMarketInterface.Tests
                     MarketCode = "ABC",
                     Price = 100m,
                     Quantity = 5,
-                    Amount = 500m,
-                    IsBuy = true,
-                    IsSell = false
+                    Amount = 500m
                 })
             };
 

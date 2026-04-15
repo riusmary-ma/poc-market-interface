@@ -22,8 +22,6 @@ namespace PocMarketInterface.Tests
                     Price = 100m,
                     Quantity = 10,
                     Amount = 1000m,
-                    IsBuy = true,
-                    IsSell = false,
                     IsCancelled = false,
                     IsSettled = false,
                     IsMatched = false
@@ -34,9 +32,7 @@ namespace PocMarketInterface.Tests
                     MarketCode = "ABC",
                     Price = 100m,
                     Quantity = 10,
-                    Amount = 1000m,
-                    IsBuy = true,
-                    IsSell = false
+                    Amount = 1000m
                 })
             };
 
@@ -59,8 +55,6 @@ namespace PocMarketInterface.Tests
                     Price = 100m,
                     Quantity = 10,
                     Amount = 1000m,
-                    IsBuy = true,
-                    IsSell = false,
                     IsCancelled = true,
                     IsSettled = false,
                     IsMatched = false
@@ -69,9 +63,7 @@ namespace PocMarketInterface.Tests
                     MarketCode = "ABC",
                     Price = 100m,
                     Quantity = 10,
-                    Amount = 1000m,
-                    IsBuy = true,
-                    IsSell = false
+                    Amount = 1000m
                 })
             };
 
@@ -94,8 +86,6 @@ namespace PocMarketInterface.Tests
                     Price = 100m,
                     Quantity = 10,
                     Amount = 1000m,
-                    IsBuy = true,
-                    IsSell = false,
                     IsCancelled = false,
                     IsSettled = false,
                     IsMatched = false
@@ -104,9 +94,7 @@ namespace PocMarketInterface.Tests
                     MarketCode = "ABC",
                     Price = 101m,
                     Quantity = 10,
-                    Amount = 1000m,
-                    IsBuy = true,
-                    IsSell = false
+                    Amount = 1000m
                 })
             };
 

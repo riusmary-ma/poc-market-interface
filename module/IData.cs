@@ -4,7 +4,7 @@ namespace PocMarketInterface.Module
     {
         long Id { get; set; }
         DateTime CreatedTime { get; set; }
-        string DataType { get; set; }
+        string DataType { get; }
         string MarketCode { get; set; }
         decimal Price { get; set; }
         int Quantity { get; set; }   

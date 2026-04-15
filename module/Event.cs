@@ -4,8 +4,8 @@ namespace PocMarketInterface.Module
     {
         public long EventId { get; set; }
         public DateTime CreatedTime { get; set; }
-        public string EventType { get; set; }
-        public string Data { get; set; }
+        public string EventType { get; set; } = string.Empty;
+        public string Data { get; set; } = string.Empty;
         public long AssociatedDataId { get; set; }
     }
 }

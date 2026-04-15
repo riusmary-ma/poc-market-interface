@@ -20,8 +20,6 @@ namespace PocMarketInterface.Tests
                     Price = 100m,
                     Quantity = 5,
                     Amount = 500m,
-                    IsBuy = true,
-                    IsSell = false,
                     IsCancelled = false,
                     IsSettled = false,
                     IsMatched = false
@@ -30,9 +28,7 @@ namespace PocMarketInterface.Tests
                     MarketCode = "ABC",
                     Price = 100m,
                     Quantity = 5,
-                    Amount = 510m,
-                    IsBuy = true,
-                    IsSell = false
+                    Amount = 510m
                 })
             };
 
@@ -55,8 +51,6 @@ namespace PocMarketInterface.Tests
                     Price = 100m,
                     Quantity = 5,
                     Amount = 500m,
-                    IsBuy = true,
-                    IsSell = false,
                     IsCancelled = false,
                     IsSettled = false,
                     IsMatched = false
@@ -65,9 +59,7 @@ namespace PocMarketInterface.Tests
                     MarketCode = "ABC",
                     Price = 101m,
                     Quantity = 5,
-                    Amount = 500m,
-                    IsBuy = true,
-                    IsSell = false
+                    Amount = 500m
                 })
             };
 
@@ -90,8 +82,6 @@ namespace PocMarketInterface.Tests
                     Price = 100m,
                     Quantity = 5,
                     Amount = 500m,
-                    IsBuy = true,
-                    IsSell = false,
                     IsCancelled = false,
                     IsSettled = true,
                     IsMatched = false
@@ -100,9 +90,7 @@ namespace PocMarketInterface.Tests
                     MarketCode = "ABC",
                     Price = 100m,
                     Quantity = 5,
-                    Amount = 510m,
-                    IsBuy = true,
-                    IsSell = false
+                    Amount = 510m
                 })
             };
 

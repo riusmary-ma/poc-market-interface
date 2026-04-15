@@ -1,3 +1,6 @@
+using PocMarketInterface.Enum;
+using PocMarketInterface.Module;
+
 namespace PocMarketInterface.Matching
 {
     public class TryMatching
@@ -9,14 +12,14 @@ namespace PocMarketInterface.Matching
         public MatchResult CompareInstructionAndAllegement(MatchData matchData)
         {
             var exactMatchResult = exactMatch.CompareInstructionAndAllegement(matchData);
-            if (exactMatchResult.MatchData == EMatchResult.ExactMatch)
+            if (exactMatchResult.Result == EMatchResult.ExactMatch)
             {
                 UpdateMatchResult(matchData, exactMatchResult);
                 return exactMatchResult;
             }
 
             var closeMatchResult = closeMatch.CompareInstructionAndAllegement(matchData);
-            if (closeMatchResult.MatchData == EMatchResult.CloseMatch)
+            if (closeMatchResult.Result == EMatchResult.CloseMatch)
             {
                 UpdateMatchResult(matchData, closeMatchResult);
                 return closeMatchResult;

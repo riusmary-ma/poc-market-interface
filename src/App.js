@@ -19,7 +19,13 @@ const parseNumber = (value) => {
   return Number.isFinite(number) ? number : NaN;
 };
 
-const getMatchResult = (instruction, allegement) => {
+const isValidNumber = (value) => {
+  return typeof value === "string" && value.trim() !== "" && Number.isFinite(Number(value));
+};
+
+const API_MATCH_URL = "http://localhost:5000/api/match";
+
+const validatePayload = (instruction, allegement) => {
   const instructionPrice = parseNumber(instruction.price);
   const instructionQuantity = parseNumber(instruction.quantity);
   const instructionAmount = parseNumber(instruction.amount);
@@ -30,36 +36,50 @@ const getMatchResult = (instruction, allegement) => {
   if (
     !instruction.marketCode ||
     !allegement.marketCode ||
-    Number.isNaN(instructionPrice) ||
-    Number.isNaN(instructionQuantity) ||
-    Number.isNaN(instructionAmount) ||
-    Number.isNaN(allegementPrice) ||
-    Number.isNaN(allegementQuantity) ||
-    Number.isNaN(allegementAmount)
+    !isValidNumber(instruction.price) ||
+    !isValidNumber(instruction.quantity) ||
+    !isValidNumber(instruction.amount) ||
+    !isValidNumber(allegement.price) ||
+    !isValidNumber(allegement.quantity) ||
+    !isValidNumber(allegement.amount)
   ) {
-    return { result: null, message: "请输入所有字段，并确保数量/价格/金额为有效数字。" };
+    return {
+      valid: false,
+      message: "请输入所有字段，并确保数量/价格/金额为有效数字。",
+    };
   }
 
-  const sameMarketCode = instruction.marketCode.trim() === allegement.marketCode.trim();
-  const samePrice = instructionPrice === allegementPrice;
-  const sameQuantity = instructionQuantity === allegementQuantity;
-  const sameAmount = instructionAmount === allegementAmount;
+  return { valid: true };
+};
 
-  if (sameMarketCode && samePrice && sameQuantity && sameAmount) {
-    return { result: EMatchResult.ExactMatch, message: "ExactMatch" };
+const mapMatchResult = (matchData) => {
+  if (matchData == null) {
+    return null;
   }
 
-  if (sameMarketCode && samePrice && sameQuantity && !sameAmount) {
-    return { result: EMatchResult.CloseMatch, message: "CloseMatch" };
+  if (typeof matchData === "string") {
+    return matchData;
   }
 
-  return { result: EMatchResult.NoMatch, message: "NoMatch" };
+  const numericResult = Number(matchData);
+  switch (numericResult) {
+    case 1:
+      return EMatchResult.ExactMatch;
+    case 2:
+      return EMatchResult.CloseMatch;
+    case 3:
+      return EMatchResult.NoMatch;
+    default:
+      return `Unknown(${matchData})`;
+  }
 };
 
 function App() {
   const [instruction, setInstruction] = useState(initialData);
   const [allegement, setAllegement] = useState(initialData);
   const [matchOutput, setMatchOutput] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleInputChange = (section, field) => (event) => {
     const value = event.target.value;
@@ -70,9 +90,71 @@ function App() {
     }
   };
 
-  const handleMatch = () => {
-    const result = getMatchResult(instruction, allegement);
-    setMatchOutput(result);
+  const handleMatch = async () => {
+    setError("");
+    setMatchOutput(null);
+
+    const validation = validatePayload(instruction, allegement);
+    if (!validation.valid) {
+      setError(validation.message);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const payload = {
+        instruction: {
+          ...instruction,
+          price: parseNumber(instruction.price),
+          quantity: parseNumber(instruction.quantity),
+          amount: parseNumber(instruction.amount),
+        },
+        allegement: {
+          ...allegement,
+          price: parseNumber(allegement.price),
+          quantity: parseNumber(allegement.quantity),
+          amount: parseNumber(allegement.amount),
+        },
+      };
+
+      const response = await fetch(API_MATCH_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const rawText = await response.text();
+      const contentType = response.headers.get("content-type") || "";
+      if (!response.ok) {
+        throw new Error(rawText || "后端匹配服务调用失败。返回非 2xx 响应。");
+      }
+
+      const looksLikeJson = /^\s*[\{\[]/.test(rawText);
+      if (!contentType.includes("application/json") && !looksLikeJson) {
+        const preview = rawText.slice(0, 30000).replace(/\s+/g, " ");
+        throw new Error(
+          `后端返回非 JSON 响应，请检查 API 路径是否正确。响应内容预览：${preview}`
+        );
+      }
+
+      let responseData;
+      try {
+        responseData = rawText ? JSON.parse(rawText) : {};
+      } catch (parseError) {
+        throw new Error(`后端返回的 JSON 无法解析：${parseError.message}`);
+      }
+
+      const matchedResult = mapMatchResult(responseData.matchData ?? responseData.matchResult ?? responseData.result);
+      const message = responseData.message || matchedResult || "后端返回未知结果。";
+
+      setMatchOutput({ result: matchedResult, message });
+    } catch (err) {
+      setError(err.message || "请求后端匹配服务时发生错误。");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -169,12 +251,14 @@ function App() {
           </section>
         </div>
 
-        <button className="match-button" onClick={handleMatch}>
-          Match
+        <button className="match-button" onClick={handleMatch} disabled={loading}>
+          {loading ? "Matching..." : "Match"}
         </button>
 
         <div className="result-box">
-          {matchOutput ? (
+          {error ? (
+            <div className="error-message">{error}</div>
+          ) : matchOutput ? (
             <>
               <strong>Result:</strong> {matchOutput.message}
               <div className="result-detail">
