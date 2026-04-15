@@ -14,6 +14,27 @@ const initialData = {
   amount: "",
 };
 
+const eventTypes = ["102", "194"];
+const eventTypeExplanation =
+  "Australia 交易中 CHESS 的数据类型。102 对应 Allegement，194 对应 Instruction。";
+
+const createDefaultEvent = () => ({
+  eventId: crypto?.randomUUID?.() ?? `event-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+  createdTime: new Date().toISOString(),
+  eventType: "102",
+  data: JSON.stringify(
+    {
+      marketCode: "ABC",
+      price: 100,
+      quantity: 5,
+      amount: 500,
+    },
+    null,
+    2
+  ),
+  associatedDataId: 0,
+});
+
 const parseNumber = (value) => {
   const number = Number(value);
   return Number.isFinite(number) ? number : NaN;
@@ -77,6 +98,7 @@ const mapMatchResult = (matchData) => {
 function App() {
   const [instruction, setInstruction] = useState(initialData);
   const [allegement, setAllegement] = useState(initialData);
+  const [event, setEvent] = useState(createDefaultEvent());
   const [matchOutput, setMatchOutput] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -85,8 +107,40 @@ function App() {
     const value = event.target.value;
     if (section === "instruction") {
       setInstruction((prev) => ({ ...prev, [field]: value }));
-    } else {
+    } else if (section === "allegement") {
       setAllegement((prev) => ({ ...prev, [field]: value }));
+    } else if (section === "event") {
+      setEvent((prev) => ({ ...prev, [field]: value }));
+    }
+  };
+
+  const handleEventTypeChange = (eventType) => {
+    setEvent((prev) => ({ ...prev, eventType }));
+  };
+
+  const syncEventDataToTarget = (sourceEvent = event) => {
+    try {
+      const parsed = JSON.parse(sourceEvent.data);
+      if (sourceEvent.eventType === "102") {
+        setAllegement((prev) => ({
+          ...prev,
+          marketCode: parsed.marketCode ?? prev.marketCode,
+          price: parsed.price != null ? String(parsed.price) : prev.price,
+          quantity: parsed.quantity != null ? String(parsed.quantity) : prev.quantity,
+          amount: parsed.amount != null ? String(parsed.amount) : prev.amount,
+        }));
+      } else if (sourceEvent.eventType === "194") {
+        setInstruction((prev) => ({
+          ...prev,
+          marketCode: parsed.marketCode ?? prev.marketCode,
+          price: parsed.price != null ? String(parsed.price) : prev.price,
+          quantity: parsed.quantity != null ? String(parsed.quantity) : prev.quantity,
+          amount: parsed.amount != null ? String(parsed.amount) : prev.amount,
+        }));
+      }
+      setError("");
+    } catch (parseError) {
+      setError(`Event data JSON 解析失败：${parseError.message}`);
     }
   };
 
@@ -249,29 +303,60 @@ function App() {
               />
             </label>
           </section>
-        </div>
 
-        <button className="match-button" onClick={handleMatch} disabled={loading}>
-          {loading ? "Matching..." : "Match"}
-        </button>
+            <section className="match-card">
+              <h2>Event</h2>
+              <label>
+                EventType
+                <select
+                  value={event.eventType}
+                  onChange={(e) => handleEventTypeChange(e.target.value)}
+                >
+                  {eventTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="event-explanation">{eventTypeExplanation}</div>
+              <label>
+                Data (JSON)
+                <textarea
+                  rows={12}
+                  value={event.data}
+                  onChange={handleInputChange("event", "data")}
+                />
+              </label>
+              <button className="match-button" type="button" onClick={() => syncEventDataToTarget()}>
+                {event.eventType === "102"
+                  ? "将 Event.data 同步到 Allegement"
+                  : "将 Event.data 同步到 Instruction"}
+              </button>
+            </section>
+          </div>
 
-        <div className="result-box">
-          {error ? (
-            <div className="error-message">{error}</div>
-          ) : matchOutput ? (
-            <>
-              <strong>Result:</strong> {matchOutput.message}
-              <div className="result-detail">
-                {matchOutput.result && `EMatchResult.${matchOutput.result}`}
-              </div>
-            </>
-          ) : (
-            <span>请填入数据后点击 Match。</span>
-          )}
-        </div>
-      </header>
-    </div>
-  );
+          <button className="match-button" onClick={handleMatch} disabled={loading}>
+            {loading ? "Matching..." : "Match"}
+          </button>
+
+          <div className="result-box">
+            {error ? (
+              <div className="error-message">{error}</div>
+            ) : matchOutput ? (
+              <>
+                <strong>Result:</strong> {matchOutput.message}
+                <div className="result-detail">
+                  {matchOutput.result && `EMatchResult.${matchOutput.result}`}
+                </div>
+              </>
+            ) : (
+              <span>请填入数据后点击 Match。</span>
+            )}
+          </div>
+        </header>
+      </div>
+    );
 }
 
 export default App;

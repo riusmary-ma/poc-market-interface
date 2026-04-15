@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PocMarketInterface")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7684ad19d1f6c9afc59f24fdcc980e3cd80d0bb2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41cb03ef566926c4ae653bbf7d0418d152890b15")]
 [assembly: System.Reflection.AssemblyProductAttribute("PocMarketInterface")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PocMarketInterface")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
